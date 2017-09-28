@@ -14,6 +14,8 @@ namespace WeatherNote.Models
         public string Message { get; set; }
         [Column(TypeName = "date")]
         public DateTime Date { get; set; }
+        [NotMapped]
+        public double? Temprature { get; set; }
 
     }
 }

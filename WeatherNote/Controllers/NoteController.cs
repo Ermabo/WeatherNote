@@ -3,15 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
+using WeatherNote.Models;
+using WeatherNote.Services;
 
 namespace WeatherNote.Controllers
 {
     public class NoteController : Controller
     {
+
+        private ApplicationDbContext _context;
+
+        public NoteController()
+        {
+            _context = new ApplicationDbContext();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
         // GET: Note
         public ActionResult Index()
         {
-            return View();
+            var notes = _context.Notes.ToList();
+
+            var weatherService = new OpenWeatherMapService();
+
+            foreach (var note in notes)
+            {
+                weatherService.FindMaxTemp(note);
+            }
+
+            return View(notes);
         }
 
         // GET: Note/Details/5
