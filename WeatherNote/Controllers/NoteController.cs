@@ -23,23 +23,46 @@ namespace WeatherNote.Controllers
         {
             _context.Dispose();
         }
+        
         // GET: Note
-        public ActionResult Index()
+        public ViewResult Index(string sortOrder, string searchString)
         {
-            var notes = _context.Notes.ToList();
+            // Sort function using viewbag
+            ViewBag.NameSort = String.IsNullOrEmpty(sortOrder) ? "message_desc" : "";
+            ViewBag.DateSort = sortOrder == "Date" ? "date_desc" : "Date";
+            var notes = from n in _context.Notes
+                           select n;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                notes = notes.Where(n => n.Message.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "message_desc":
+                    notes = notes.OrderByDescending(n => n.Message);
+                    break;
+                case "Date":
+                    notes = notes.OrderBy(n => n.Date);
+                    break;
+                case "date_desc":
+                    notes = notes.OrderByDescending(n => n.Date);
+                    break;
+                default:
+                    notes = notes.OrderBy(n => n.Message);
+                    break;
+            }
 
             var weatherService = new OpenWeatherMapService();
-            //var weatherObject = new Weather.RootObject();
-            //var weatherTask = weatherService.GetWeather();
-            //weatherObject = weatherTask.Result;
+            var notelist = notes.ToList();
 
-            foreach (var note in notes)
+            foreach (var note in notelist)
             {
                 weatherService.FindMaxTemp(note);
             }
 
-            return View(notes);
+            return View(notes.ToList());
         }
+
 
         // GET: Note/Details/5
         public ActionResult Details(int id)
@@ -71,10 +94,33 @@ namespace WeatherNote.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult Save(Note note)
+        {
+            if (note.Id == 0)
+                _context.Notes.Add(note);
+            
+            else
+            {
+                var noteInDb = _context.Notes.Single(n => n.Id == note.Id);
+                noteInDb.Date = note.Date;
+                noteInDb.Message = note.Message;
+            }
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Note");
+        }
+
         // GET: Note/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var note = _context.Notes.SingleOrDefault(n => n.Id == id);
+
+            if (note == null)
+                return HttpNotFound();
+
+            return View("NoteForm");
         }
 
         // POST: Note/Edit/5
@@ -96,7 +142,13 @@ namespace WeatherNote.Controllers
         // GET: Note/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var note = _context.Notes.SingleOrDefault(n => n.Id == id);
+
+            _context.Notes.Remove(note);
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Note");
         }
 
         // POST: Note/Delete/5

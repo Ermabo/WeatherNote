@@ -1,4 +1,4 @@
-﻿@model List<WeatherNote.Models.Note>
+﻿@model IEnumerable<WeatherNote.Models.Note>
 @{
     ViewBag.Title = "Index";
 }
@@ -10,12 +10,17 @@
 }
 else
 {
-    @Html.ActionLink("Create new", "Create", "Notes", new { @class = "btn btn-primary"})
+    @Html.ActionLink("Create new", "Create", "Notes", new { @class = "btn btn-primary" })
+    using (Html.BeginForm("Index", "Note", FormMethod.Post, new { @class = "form-inline" }))
+    {
+            @Html.TextBox("SearchString", "Searh for a note", new { @class = "form-control" })
+            <button type="submit" class="btn btn-primary">Search</button>
+    }
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Note</th>
+                <th>@Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DateSort }) </th>
+                <th>@Html.ActionLink("Note", "Index", new { sortOrder = ViewBag.NameSort })</th>
                 <th>Temperature</th>
             </tr>
         </thead>
@@ -33,11 +38,11 @@ else
                         else
                         {
                             @note.Temprature<text> °C</text>;
-}
+                        }
                     </td>
                     <td>
-                        @Html.ActionLink("Edit note", "Details", new { id = note.Id }, null)
-                        @Html.ActionLink("Delete note", "Delete", new { id = note.Id }, null)
+                        @Html.ActionLink("Edit note", "Edit", "Note", new { id = note.Id }, null)
+                        @Html.ActionLink("Delete note", "Delete", "Note", new { id = note.Id }, null)
                     </td>
                 </tr>
             }
