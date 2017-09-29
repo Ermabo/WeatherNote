@@ -23,6 +23,7 @@ namespace WeatherNote.Models
 
         public class List
         {
+            public DateTime date;
             public int dt { get; set; }
             public Main main { get; set; }
             public string dt_txt { get; set; }

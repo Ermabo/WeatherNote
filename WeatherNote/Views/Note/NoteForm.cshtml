@@ -1,0 +1,15 @@
+﻿@model WeatherNote.Models.Note
+@{
+    ViewBag.Title = "New";
+}
+
+<h2>Create/Edit note</h2>
+
+@using (Html.BeginForm("Save, Notes"))
+{
+    <div class="form-group">    
+        @Html.LabelFor(m => m.Date)
+        @Html.EditorFor(m => m.Date)
+    </div>
+}
+                                        

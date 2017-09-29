@@ -10,12 +10,13 @@
 }
 else
 {
+    @Html.ActionLink("Create new", "Create", "Notes", new { @class = "btn btn-primary"})
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
                 <th>Date</th>
                 <th>Note</th>
-                <th>Temp</th>
+                <th>Temperature</th>
             </tr>
         </thead>
         <tbody>
@@ -24,7 +25,20 @@ else
                 <tr>
                     <td>@note.Date.ToShortDateString()</td>
                     <td>@note.Message</td>
-                    <td>?</td>
+                    <td>
+                        @if (note.Temprature == null)
+                        {
+                            <text>?</text>
+                        }
+                        else
+                        {
+                            @note.Temprature<text> °C</text>;
+}
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit note", "Details", new { id = note.Id }, null)
+                        @Html.ActionLink("Delete note", "Delete", new { id = note.Id }, null)
+                    </td>
                 </tr>
             }
         </tbody>

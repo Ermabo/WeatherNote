@@ -11,9 +11,14 @@ namespace WeatherNote.Models
     {
         [Key]
         public int Id { get; set; }
+
         public string Message { get; set; }
+
         [Column(TypeName = "date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
+
         [NotMapped]
         public double? Temprature { get; set; }
 

@@ -29,6 +29,9 @@ namespace WeatherNote.Controllers
             var notes = _context.Notes.ToList();
 
             var weatherService = new OpenWeatherMapService();
+            //var weatherObject = new Weather.RootObject();
+            //var weatherTask = weatherService.GetWeather();
+            //weatherObject = weatherTask.Result;
 
             foreach (var note in notes)
             {
@@ -47,7 +50,9 @@ namespace WeatherNote.Controllers
         // GET: Note/Create
         public ActionResult Create()
         {
-            return View();
+            var note = new Note();
+
+            return View("NoteForm", note);
         }
 
         // POST: Note/Create
