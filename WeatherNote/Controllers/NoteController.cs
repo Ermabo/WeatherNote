@@ -120,7 +120,7 @@ namespace WeatherNote.Controllers
             if (note == null)
                 return HttpNotFound();
 
-            return View("NoteForm");
+            return View("NoteForm", note);
         }
 
         // POST: Note/Edit/5
